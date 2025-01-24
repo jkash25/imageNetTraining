@@ -72,6 +72,6 @@ footer a {
     width: 100%;
 }
 
-footer:hover {
+footer a:hover {
     color: #ffffff;
 }
