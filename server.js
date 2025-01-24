@@ -169,7 +169,7 @@ app.get('/get-categories', async (req, res) => {
 })
 
 
-app.get('/get-random-dog', async (req, res) => {
+app.get('/get-random-dog-url', async (req, res) => {
     try {
         const data = await getDogObject();
         let categories = data.split('\n')
@@ -194,7 +194,7 @@ app.get('/get-random-dog', async (req, res) => {
         
           const randomFile = await getRandomFileFromAllFolders(BUCKET_NAME, awsImageKey, prefixes,region);
           console.log("random file url: " + randomFile)
-          res.json({imageurl: randomFile})
+          res.json({imageUrl: randomFile})
     } catch (err) {
         console.error("Error: " + err);
     }
