@@ -19,7 +19,7 @@ async function getObject(params) {
     console.log("get object has been called");
     const data = await s3.getObject(params2).promise();
     const result = data.Body.toString('utf-8');
-    console.log("result: " + result);
+    //console.log("result: " + result);
     return result;
 }
 
@@ -27,7 +27,7 @@ async function getDogObject() {
     console.log("get dog object has been called");
     const data = await s3.getObject(dogParams).promise();
     const result = data.Body.toString('utf-8');
-    console.log("result: " + result);
+    //console.log("result: " + result);
     return result;
 }
 
