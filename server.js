@@ -19,7 +19,6 @@ async function getObject(params) {
     console.log("get object has been called");
     const data = await s3.getObject(params2).promise();
     const result = data.Body.toString('utf-8');
-    //console.log("result: " + result);
     return result;
 }
 
@@ -27,7 +26,6 @@ async function getDogObject() {
     console.log("get dog object has been called");
     const data = await s3.getObject(dogParams).promise();
     const result = data.Body.toString('utf-8');
-    //console.log("result: " + result);
     return result;
 }
 
@@ -54,7 +52,7 @@ async function imageToCategory(img_path) {
         }
 }
 
-async function getRandomFileFromAllFolders(bucketName, searchString, prefixes, region) {
+async function getRandomFileFromAllFolders(bucketName, searchString, prefixes) {
     const matchingFiles = [];
   
     // Function to fetch all objects from a given prefix
@@ -99,8 +97,7 @@ async function getRandomFileFromAllFolders(bucketName, searchString, prefixes, r
     }
   
     const randomFile = matchingFiles[Math.floor(Math.random() * matchingFiles.length)];
-    const fileUrl = `https://${bucketName}.s3.${region}.amazonaws.com/${randomFile.Key}`;
-    return fileUrl;
+    return randomFile.Key;
   }
 
 
@@ -186,15 +183,19 @@ app.get('/get-random-dog-url', async (req, res) => {
         }
         console.log("awsImageKey: " + awsImageKey)
         const prefixes = [
-            'split_1/', 'split_2/', 'split_3/', // Add all folder prefixes
+            'split_1/', 'split_2/', 'split_3/',
             'split_4/', 'split_5/', 'split_6/',
             'split_7/', 'split_8/', 'split_9/', 'split_10/'
-          ];
-          const region = 'us-east-1';
-        
-          const randomFile = await getRandomFileFromAllFolders(BUCKET_NAME, awsImageKey, prefixes,region);
-          console.log("random file url: " + randomFile)
-          res.json({imageUrl: randomFile})
+          ];        
+        const randomFile = await getRandomFileFromAllFolders(BUCKET_NAME, awsImageKey, prefixes);
+        signedUrlParams = {
+            Bucket: BUCKET_NAME,
+            Key: randomFile,
+            Expires: 60,
+        };
+
+        const signedUrl = s3.getSignedUrl('getObject', signedUrlParams);
+        res.json({imageUrl: signedUrl});
     } catch (err) {
         console.error("Error: " + err);
     }
