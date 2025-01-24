@@ -54,6 +54,55 @@ async function imageToCategory(img_path) {
         }
 }
 
+async function getRandomFileFromAllFolders(bucketName, searchString, prefixes, region) {
+    const matchingFiles = [];
+  
+    // Function to fetch all objects from a given prefix
+    async function fetchObjectsFromPrefix(prefix) {
+      const params = {
+        Bucket: bucketName,
+        Prefix: prefix, // Specify the current folder (prefix)
+      };
+  
+      const prefixMatchingFiles = [];
+  
+      let continuationToken = null;
+      do {
+        if (continuationToken) {
+          params.ContinuationToken = continuationToken;
+        }
+  
+        const data = await s3.listObjectsV2(params).promise();
+  
+        // Filter objects whose Key includes the search string
+        const filteredFiles = data.Contents.filter((item) => item.Key.includes(searchString));
+        prefixMatchingFiles.push(...filteredFiles);
+  
+        continuationToken = data.IsTruncated ? data.NextContinuationToken : null;
+      } while (continuationToken);
+  
+      return prefixMatchingFiles;
+    }
+  
+    // Fetch all prefixes in parallel
+    const folderPromises = prefixes.map(fetchObjectsFromPrefix);
+  
+    // Wait for all folders to be processed
+    const results = await Promise.all(folderPromises);
+  
+    // Combine results from all folders
+    results.forEach((result) => matchingFiles.push(...result));
+  
+    // Pick a random file if any matches were found
+    if (matchingFiles.length === 0) {
+      throw new Error(`No files found containing "${searchString}" in any folder.`);
+    }
+  
+    const randomFile = matchingFiles[Math.floor(Math.random() * matchingFiles.length)];
+    const fileUrl = `https://${bucketName}.s3.${region}.amazonaws.com/${randomFile.Key}`;
+    return fileUrl;
+  }
+
 
 app.get(`/get-random-image-url`, async (req, res) => {
     try {
@@ -121,24 +170,34 @@ app.get('/get-categories', async (req, res) => {
 
 
 app.get('/get-random-dog', async (req, res) => {
-       try {
+    try {
         const data = await getDogObject();
-        const categories = data.split('\n').filter(line => line.trim() !== '')
-        const randomDog = categories[Math.floor(Math.random() * categories.length)]
-
+        let categories = data.split('\n')
+        let randomDog = categories[Math.floor(Math.random() * categories.length)]
+        randomDog = randomDog.substring(0, randomDog.length - 1)
         const data2 = await getObject();
-        const lines = data2.split('\n').filter(line => line.trim() !== '')
-        const matched = lines.find(line => line.toLowerCase().includes(randomDog.toLowerCase()))
-        if (!matchedLine) {
-            throw new Error(`No match found for category: ${categoryName}`);
+        const locSynsetArray = data2.split(/\r?\n|\r|\n/g);
+        let awsImageKey = "";
+        for (let i = 0; i < locSynsetArray.length; i++) {
+            if (locSynsetArray[i].toLowerCase().includes(randomDog.toLowerCase())) {
+                console.log("MATCH FOUND IN LOC SYNSET ARRAY: " + locSynsetArray[i])
+                awsImageKey = locSynsetArray[i].substring(0,9)
+            }
         }
-        const synset = matchedLine.split(' ')[0];
-
-        res.json(synset);
-       } catch (err) {
-            console.error("error in get random dog")
-       }
-       
+        console.log("awsImageKey: " + awsImageKey)
+        const prefixes = [
+            'split_1/', 'split_2/', 'split_3/', // Add all folder prefixes
+            'split_4/', 'split_5/', 'split_6/',
+            'split_7/', 'split_8/', 'split_9/', 'split_10/'
+          ];
+          const region = 'us-east-1';
+        
+          const randomFile = await getRandomFileFromAllFolders(BUCKET_NAME, awsImageKey, prefixes,region);
+          console.log("random file url: " + randomFile)
+          res.json({imageurl: randomFile})
+    } catch (err) {
+        console.error("Error: " + err);
+    }
 })
 
 
