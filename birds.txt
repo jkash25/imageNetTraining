@@ -1,0 +1,60 @@
+cock
+hen
+ostrich, Struthio camelus
+brambling, Fringilla montifringilla
+goldfinch, Carduelis carduelis
+house finch, linnet, Carpodacus mexicanus
+junco, snowbird
+indigo bunting, indigo finch, indigo bird, Passerina cyanea
+robin, American robin, Turdus migratorius
+bulbul
+jay
+magpie
+chickadee
+water ouzel, dipper
+kite
+bald eagle, American eagle, Haliaeetus leucocephalus
+vulture
+great grey owl, great gray owl, Strix nebulosa
+black grouse
+ptarmigan
+ruffed grouse, partridge, Bonasa umbellus
+prairie chicken, prairie grouse, prairie fowl
+peacock
+quail
+partridge
+African grey, African gray, Psittacus erithacus
+macaw
+sulphur-crested cockatoo, Kakatoe galerita, Cacatua galerita
+lorikeet
+coucal
+bee eater
+hornbill
+hummingbird
+jacamar
+toucan
+drake
+red-breasted merganser, Mergus serrator
+goose
+black swan, Cygnus atratus
+tusker
+white stork, Ciconia ciconia
+black stork, Ciconia nigra
+spoonbill
+flamingo
+little blue heron, Egretta caerulea
+American egret, great white heron, Egretta albus
+bittern
+crane
+limpkin, Aramus pictus
+European gallinule, Porphyrio porphyrio
+American coot, marsh hen, mud hen, water hen, Fulica americana
+bustard
+ruddy turnstone, Arenaria interpres
+red-backed sandpiper, dunlin, Erolia alpina
+redshank, Tringa totanus
+dowitcher
+oystercatcher, oyster catcher
+pelican
+king penguin, Aptenodytes patagonica
+albatross, mollymawk
