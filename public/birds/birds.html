@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Labeling</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>Image Labeling: Birds</h1>
+    <input type="button" id="clickMe" value="Get Image" />
+    <div id="imageContainer">
+        <!-- Image will be displayed here -->
+    </div>
+    <script type="module" src="birds.js"></script>
+
+    <div>
+        <label for="category-search">Search for a Category:</label>
+        <input type="search" id="category-search" placeholder="Type to search..." />
+        <ul id="category-list" class="hidden"></ul>
+        <button id="search-button">Submit Category Guess</button>
+    </div>
+
+    <div id="stats" class="floating-widget">
+        <h2>Correct: <span id ="correctCount">0</span></h2>
+        <h2>Wrong: <span id ="wrongCount">0</span></h2>
+        <h2>Total Guesses: <span id ="totalGuesses">0</span></h2>
+    </div>
+    <div style="height: 150px"></div>
+
+</body>
+</html>
