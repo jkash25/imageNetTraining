@@ -15,6 +15,11 @@ const dogParams = {
     Key: "dogs.txt"
 }
 
+const birdParams = {
+    Bucket: BUCKET_NAME,
+    Key: "birds.txt"
+}
+
 async function getObject(params) {
     console.log("get object has been called");
     const data = await s3.getObject(params2).promise();
@@ -25,6 +30,13 @@ async function getObject(params) {
 async function getDogObject() {
     console.log("get dog object has been called");
     const data = await s3.getObject(dogParams).promise();
+    const result = data.Body.toString('utf-8');
+    return result;
+}
+
+async function getBirdObject() {
+    console.log("get bird object has been called");
+    const data = await s3.getObject(birdParams).promise();
     const result = data.Body.toString('utf-8');
     return result;
 }
@@ -169,6 +181,42 @@ app.get('/get-categories', async (req, res) => {
 app.get('/get-random-dog-url', async (req, res) => {
     try {
         const data = await getDogObject();
+        let categories = data.split('\n')
+        let randomDog = categories[Math.floor(Math.random() * categories.length)]
+        randomDog = randomDog.substring(0, randomDog.length - 1)
+        const data2 = await getObject();
+        const locSynsetArray = data2.split(/\r?\n|\r|\n/g);
+        let awsImageKey = "";
+        for (let i = 0; i < locSynsetArray.length; i++) {
+            if (locSynsetArray[i].toLowerCase().includes(randomDog.toLowerCase())) {
+                console.log("MATCH FOUND IN LOC SYNSET ARRAY: " + locSynsetArray[i])
+                awsImageKey = locSynsetArray[i].substring(0,9)
+            }
+        }
+        console.log("awsImageKey: " + awsImageKey)
+        const prefixes = [
+            'split_1/', 'split_2/', 'split_3/',
+            'split_4/', 'split_5/', 'split_6/',
+            'split_7/', 'split_8/', 'split_9/', 'split_10/'
+          ];        
+        const randomFile = await getRandomFileFromAllFolders(BUCKET_NAME, awsImageKey, prefixes);
+        signedUrlParams = {
+            Bucket: BUCKET_NAME,
+            Key: randomFile,
+            Expires: 60,
+        };
+
+        const signedUrl = s3.getSignedUrl('getObject', signedUrlParams);
+        res.json({imageUrl: signedUrl});
+    } catch (err) {
+        console.error("Error: " + err);
+    }
+})
+
+
+app.get('/get-random-bird-url', async (req, res) => {
+    try {
+        const data = await getBirdObject();
         let categories = data.split('\n')
         let randomDog = categories[Math.floor(Math.random() * categories.length)]
         randomDog = randomDog.substring(0, randomDog.length - 1)
