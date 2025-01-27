@@ -218,13 +218,13 @@ app.get('/get-random-bird-url', async (req, res) => {
     try {
         const data = await getBirdObject();
         let categories = data.split('\n')
-        let randomDog = categories[Math.floor(Math.random() * categories.length)]
-        randomDog = randomDog.substring(0, randomDog.length - 1)
+        let randomBird = categories[Math.floor(Math.random() * categories.length)]
+        randomBird = randomBird.substring(0, randomBird.length - 1)
         const data2 = await getObject();
         const locSynsetArray = data2.split(/\r?\n|\r|\n/g);
         let awsImageKey = "";
         for (let i = 0; i < locSynsetArray.length; i++) {
-            if (locSynsetArray[i].toLowerCase().includes(randomDog.toLowerCase())) {
+            if (locSynsetArray[i].toLowerCase().includes(randomBird.toLowerCase())) {
                 console.log("MATCH FOUND IN LOC SYNSET ARRAY: " + locSynsetArray[i])
                 awsImageKey = locSynsetArray[i].substring(0,9)
             }
@@ -251,6 +251,7 @@ app.get('/get-random-bird-url', async (req, res) => {
 
 
 app.use(express.static('public'));
+app.use(express.json());
 
 app.listen(port, () => {
     console.log(`Server is running at http://localhost:${port}`);

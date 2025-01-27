@@ -18,6 +18,10 @@ h1 {
     letter-spacing: 1px;
 }
 
+em {
+    color: green;
+}
+
 /* Button Styling */
 input[type="button"], #search-button {
     padding: 12px 25px;
