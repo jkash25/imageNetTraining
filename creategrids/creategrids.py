@@ -1,13 +1,5 @@
 import os
 from PIL import Image
-#Goal
-# 1. iterate through loc synset mapping and and for each category
-#    find first 25 images in val_images, create grid and save to grids folder
-# 2. name should be synset
-
-
-
-
 
 map_fname='C:\\Users\\Jai K\\Work\\Georgia Tech\\website\\text\\LOC_synset_mapping.txt'
 synset_arr = []
