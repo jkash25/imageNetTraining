@@ -249,6 +249,14 @@ app.get('/get-random-bird-url', async (req, res) => {
     }
 })
 
+app.get('/image-grid', async (req, res) => {
+    try {
+        req.dat
+    } catch (err) {
+
+    }
+})
+
 
 app.use(express.static('public'));
 app.use(express.json());
