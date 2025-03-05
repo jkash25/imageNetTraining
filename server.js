@@ -41,6 +41,29 @@ async function getBirdObject() {
 	return result;
 }
 
+async function getIdentifierFromCategory(categoryName) {
+	const data1 = await getObject();
+	const fileContent = data1;
+
+	const lines = fileContent.split("\n").filter((line) => line.trim() !== "");
+	const categoryMap = {};
+
+	lines.forEach((line) => {
+		const firstSpaceIndex = line.indexOf(" ");
+		if (firstSpaceIndex === -1) return;
+
+		const id = line.substring(0, firstSpaceIndex); // Extract identifier
+		const fullCategoryName = line.substring(firstSpaceIndex + 1).trim(); // Keep the full category name
+
+		// Map the full category name to its identifier
+		categoryMap[fullCategoryName] = id;
+	});
+
+	// Return the identifier for the given category name
+	console.log(categoryMap);
+	return categoryMap[categoryName] || null;
+}
+
 async function imageToCategory(img_path) {
 	console.log(img_path);
 	console.log("image to category has been calleds");
@@ -299,9 +322,71 @@ app.get("/get-random-bird-url", async (req, res) => {
 
 app.get("/get-image-grid", async (req, res) => {
 	try {
-		req.dat;
-	} catch (err) {}
+		sId = req.query.synsetIdentifier;
+        const gridParams1 = {
+            Bucket: BUCKET_NAME,
+            Prefix: "grids/",
+        }
+        const data = await s3.listObjectsV2(gridParams1).promise();
+        if (!data.Contents || data.Contents.length === 0) {
+            console.log("No images found inside grids folder");
+        }
+
+        const matching = data.Contents.filter(obj => obj.Key.includes(sId));
+        if (matching.length === 0) {
+            console.log("No images found with that synset identifier");
+        }
+        const image = matching[0].Key;
+        const signedUrl = s3.getSignedUrl('getObject', {
+            Bucket: BUCKET_NAME,
+            Key: image,
+            Expires: 60,
+        });
+        res.json({gridImageUrl: signedUrl}); 
+
+	} catch (err) {
+        console.error("Error in get image grid in server.js: " + err)
+    }
 });
+
+app.get("/get-image-grid-from-category", async (req, res) => {
+	try {
+		
+		const categoryName = req.query.categoryName;
+		console.log("category name: " + categoryName)
+		if (!categoryName) {
+            return res.status(400).json({ error: "categoryName is required" });
+        }
+		sId = await getIdentifierFromCategory(categoryName);
+		console.log("id in get image grid from category: " + sId);
+		if (!sId) {
+            return res.status(404).json({ error: "Category not found" });
+        }
+		const gridParams1 = {
+            Bucket: BUCKET_NAME,
+            Prefix: "grids/",
+        }
+        const data = await s3.listObjectsV2(gridParams1).promise();
+        if (!data.Contents || data.Contents.length === 0) {
+            console.log("No images found inside grids folder");
+        }
+        const matching = data.Contents.filter(obj => obj.Key.includes(sId));
+        if (matching.length === 0) {
+            console.log("No images found with that synset identifier");
+        }
+        const image = matching[0].Key;
+        const signedUrl = s3.getSignedUrl('getObject', {
+            Bucket: BUCKET_NAME,
+            Key: image,
+            Expires: 60,
+        });
+        res.json({gridImageUrl: signedUrl});
+		
+	} catch (err) {
+		console.error("error in /get-image-grid-from-category", err);
+	}
+	
+})
 
 app.use(express.static("public"));
 app.use(express.json());
