@@ -2,6 +2,7 @@ let currentCategory = null;
 let numCorrect = 0;
 let numGuesses = 0;
 let numWrong = 0;
+const BUCKET_NAME = "validationimages";
 
 document.getElementById("clickMe").addEventListener("click", async () => {
 	try {
@@ -32,18 +33,20 @@ document.getElementById("clickMe").addEventListener("click", async () => {
 			const imgElement = document.createElement("img");
 			imgElement.src = data.imageUrl;
 			imgElement.alt = "Random Image";
-            imgElement.classList.add("image-item");
+			imgElement.classList.add("image-item");
 			imgElement.style.maxWidth = "100%";
 			imgElement.style.height = "auto";
 
 			imgBox1.appendChild(imgElement);
 			imageContainer.appendChild(imgBox1);
 
-            try {
-				const response2 = await fetch(`/get-image-grid?synsetIdentifier=${currentSynsetId}`);
+			try {
+				const response2 = await fetch(
+					`/get-image-grid?synsetIdentifier=${currentSynsetId}`
+				);
 				const data2 = await response2.json();
-                if (data2.gridImageUrl) {
-                    const imgBox2 = document.createElement("div");
+				if (data2.gridImageUrl) {
+					const imgBox2 = document.createElement("div");
 					imgBox2.classList.add("image-box", "hidden");
 
 					const imgElement2 = document.createElement("img");
@@ -69,12 +72,12 @@ document.getElementById("clickMe").addEventListener("click", async () => {
 						imgBox2.classList.toggle("hidden");
 						imgBox2.classList.toggle("fade-in");
 						imageText.classList.toggle("hidden");
-						imageText.classList.toggle("fade-in-text")
+						imageText.classList.toggle("fade-in-text");
 						showButton.textContent = imgBox2.classList.contains("hidden")
 							? "Show Grid Image and Correct Answer"
 							: "Hide";
 					});
-                }
+				}
 			} catch (err) {
 				console.error("Error in get image grid in app.js: ", err);
 			}
@@ -95,8 +98,10 @@ document.getElementById("clickMe").addEventListener("click", async () => {
 	console.log("Search input: " + searchInput);
 	const categoryList = document.getElementById("category-list");
 	const searchButton = document.getElementById("search-button");
-	const currentGuessContainer = document.getElementById("current-guess-container");
-    const currentGuessImage = document.getElementById("current-guess-image")
+	const currentGuessContainer = document.getElementById(
+		"current-guess-container"
+	);
+	const currentGuessImage = document.getElementById("current-guess-image");
 	const currentGuessText = document.getElementById("current-guess-text");
 
 	searchInput.addEventListener("input", function () {
@@ -130,16 +135,37 @@ document.getElementById("clickMe").addEventListener("click", async () => {
 
 	async function getCurrentGuessImage(category) {
 		try {
-			const response = await fetch(`/get-image-grid-from-category?categoryName=${category}`);
+			const response = await fetch(
+				`/get-image-grid-from-category?categoryName=${category}`
+			);
 			const data = await response.json();
-			 if (data.gridImageUrl) {
+			if (data.gridImageUrl) {
+				// const imgBox2 = document.createElement("div");
+				// 	imgBox2.classList.add("image-box", "hidden");
+
+				// 	const imgElement2 = document.createElement("img");
+				// 	imgElement2.src = data2.gridImageUrl;
+				// 	imgElement2.alt = "Grid Image";
+				// 	imgElement2.classList.add("image-item"); // Add class for styling
+
+				// 	imgBox2.appendChild(imgElement2);
+				// 	imageContainer.appendChild(imgBox2);
+
+				// const imgBox3 = document.createElement("div");
+				// imgBox3.classList.add("image-box", "hidden")
+				// const imgElement3 = document.createElement("img");
+				// imgElement3.src = data.gridImageUrl;
+				// imgElement3.alt = "current guess";
+				// imgElement3.classList.add("image-item");
+				// imgBox3.appendChild(imgElement3);
+				// imageContainer.appendChild(imgBox3);
 				currentGuessImage.src = data.gridImageUrl;
-                currentGuessImage.alt = category;
-                currentGuessText.textContent = `Your current guess: ${category}`;
-                currentGuessContainer.classList.remove("hidden");
-			 }
+				currentGuessImage.alt = category;
+				currentGuessText.textContent = `Your current guess: ${category}`;
+				currentGuessContainer.classList.remove("hidden");
+			}
 		} catch (err) {
-			console.error("error in getCurrentGuessImage: "+ err)
+			console.error("error in getCurrentGuessImage: " + err);
 		}
 	}
 
@@ -148,14 +174,25 @@ document.getElementById("clickMe").addEventListener("click", async () => {
 			categoryList.classList.add("hidden");
 		}
 	});
-
-	searchButton.addEventListener("click", () => {
+	
+	searchButton.addEventListener("click", async() => {
 		const selectedCategory = searchInput.value.trim();
 		if (!currentCategory) {
 			alert("No image loaded. Please click the button to load an image.");
 			return;
 		}
 		if (selectedCategory === currentCategory) {
+			console.log("got here!")
+			const audioData = await fetch(`/get-Correct-Answer-Audio`)
+			if (audioData.ok) {
+				const blob = await audioData.blob();
+				const audioURL = URL.createObjectURL(blob);
+				console.log("Audio URL:", audioURL);
+				const audio = new Audio(audioURL);
+				audio.play();
+			} else {
+				console.error("failed to fetch audio data");
+			}
 			console.log("You selected correctly!: " + selectedCategory);
 			numCorrect++;
 			numGuesses++;

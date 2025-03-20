@@ -20,6 +20,11 @@ const birdParams = {
 	Key: "birds.txt",
 };
 
+const audioParams = {
+	Bucket: BUCKET_NAME,
+	Key: "correct_answer_sound.mp3",
+}
+
 async function getObject(params) {
 	console.log("get object has been called");
 	const data = await s3.getObject(params2).promise();
@@ -323,70 +328,78 @@ app.get("/get-random-bird-url", async (req, res) => {
 app.get("/get-image-grid", async (req, res) => {
 	try {
 		sId = req.query.synsetIdentifier;
-        const gridParams1 = {
-            Bucket: BUCKET_NAME,
-            Prefix: "grids/",
-        }
-        const data = await s3.listObjectsV2(gridParams1).promise();
-        if (!data.Contents || data.Contents.length === 0) {
-            console.log("No images found inside grids folder");
-        }
+		const gridParams1 = {
+			Bucket: BUCKET_NAME,
+			Prefix: "grids/",
+		};
+		const data = await s3.listObjectsV2(gridParams1).promise();
+		if (!data.Contents || data.Contents.length === 0) {
+			console.log("No images found inside grids folder");
+		}
 
-        const matching = data.Contents.filter(obj => obj.Key.includes(sId));
-        if (matching.length === 0) {
-            console.log("No images found with that synset identifier");
-        }
-        const image = matching[0].Key;
-        const signedUrl = s3.getSignedUrl('getObject', {
-            Bucket: BUCKET_NAME,
-            Key: image,
-            Expires: 60,
-        });
-        res.json({gridImageUrl: signedUrl}); 
-
+		const matching = data.Contents.filter((obj) => obj.Key.includes(sId));
+		if (matching.length === 0) {
+			console.log("No images found with that synset identifier");
+		}
+		const image = matching[0].Key;
+		const signedUrl = s3.getSignedUrl("getObject", {
+			Bucket: BUCKET_NAME,
+			Key: image,
+			Expires: 60,
+		});
+		res.json({ gridImageUrl: signedUrl });
 	} catch (err) {
-        console.error("Error in get image grid in server.js: " + err)
-    }
+		console.error("Error in get image grid in server.js: " + err);
+	}
 });
 
 app.get("/get-image-grid-from-category", async (req, res) => {
 	try {
-		
 		const categoryName = req.query.categoryName;
-		console.log("category name: " + categoryName)
+		console.log("category name: " + categoryName);
 		if (!categoryName) {
-            return res.status(400).json({ error: "categoryName is required" });
-        }
+			return res.status(400).json({ error: "categoryName is required" });
+		}
 		sId = await getIdentifierFromCategory(categoryName);
 		console.log("id in get image grid from category: " + sId);
 		if (!sId) {
-            return res.status(404).json({ error: "Category not found" });
-        }
+			return res.status(404).json({ error: "Category not found" });
+		}
 		const gridParams1 = {
-            Bucket: BUCKET_NAME,
-            Prefix: "grids/",
-        }
-        const data = await s3.listObjectsV2(gridParams1).promise();
-        if (!data.Contents || data.Contents.length === 0) {
-            console.log("No images found inside grids folder");
-        }
-        const matching = data.Contents.filter(obj => obj.Key.includes(sId));
-        if (matching.length === 0) {
-            console.log("No images found with that synset identifier");
-        }
-        const image = matching[0].Key;
-        const signedUrl = s3.getSignedUrl('getObject', {
-            Bucket: BUCKET_NAME,
-            Key: image,
-            Expires: 60,
-        });
-        res.json({gridImageUrl: signedUrl});
-		
+			Bucket: BUCKET_NAME,
+			Prefix: "grids/",
+		};
+		const data = await s3.listObjectsV2(gridParams1).promise();
+		if (!data.Contents || data.Contents.length === 0) {
+			console.log("No images found inside grids folder");
+		}
+		const matching = data.Contents.filter((obj) => obj.Key.includes(sId));
+		if (matching.length === 0) {
+			console.log("No images found with that synset identifier");
+		}
+		const image = matching[0].Key;
+		const signedUrl = s3.getSignedUrl("getObject", {
+			Bucket: BUCKET_NAME,
+			Key: image,
+			Expires: 60,
+		});
+		res.json({ gridImageUrl: signedUrl });
 	} catch (err) {
 		console.error("error in /get-image-grid-from-category", err);
 	}
-	
-})
+});
+
+app.get("/get-Correct-Answer-Audio", async (req, res) => {
+	try {
+        const audioData = await s3.getObject(audioParams).promise();
+        res.setHeader('Content-Type', 'audio/mpeg');
+		res.setHeader("Content-Disposition", "inline");
+        res.send(audioData.Body);
+    } catch (error) {
+        console.error("Error fetching audio:", error);
+        res.status(500).json({ message: "Failed to fetch audio" });
+    }
+});
 
 app.use(express.static("public"));
 app.use(express.json());
