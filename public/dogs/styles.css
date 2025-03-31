@@ -19,7 +19,7 @@ h1 {
 }
 
 em {
-	color: green;
+	color: rgba(9, 221, 20, 0.808);
 }
 
 /* Button Styling */
@@ -45,19 +45,97 @@ input[type="button"]:hover,
 /* Image Container */
 #imageContainer {
 	margin: 20px auto;
-	padding: 20px;
-	border: 2px dashed #333;
-	border-radius: 10px;
-	width: 80%;
-	max-width: 600px;
-	background-color: #1e1e1e;
-	min-height: 200px;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
-	color: #757575;
-	font-style: italic;
+    padding: 20px;
+    width: 90%;
+    max-width: 800px;
+    background-color: #1e1e1e;
+    min-height: 200px;
+    display: flex; 
+    justify-content: center; /* Centers images horizontally */
+    align-items: center;
+    gap: 20px; 
+}
+
+.image-box {
+    border: 2px dashed #333;
+    border-radius: 10px;
+    padding: 15px;
+    background-color: #1e1e1e;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    min-width: 250px; /* Ensures a consistent width */
+    min-height: 250px; /* Ensures a consistent height */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Image Styling */
+.image-item {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+}
+.hidden {
+    display: none;
+}
+
+/* Fade-in Effect */
+.fade-in {
+    display: flex;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+.fade-in-text {
+	display: block;
+	animation: fadeInText 0.5s ease-in-out;
+}
+
+/* Keyframes for fade-in animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(5px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInText {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.image-text {
+    font-size: 1rem;
+    color: #e0e0e0;
+    margin-top: 10px;
+    text-align: center;
+    font-style: italic;
+}
+
+/* Show Button Styling */
+.show-button {
+    padding: 10px 20px;
+    margin-top: 10px;
+    background-color: #1db954;
+    color: #121212;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+}
+
+.show-button:hover {
+    background-color: #169644;
 }
 
 /* Category Search */
@@ -67,6 +145,8 @@ label {
 	display: block;
 	color: #e0e0e0;
 }
+
+
 
 #category-search {
 	width: 80%;
@@ -166,4 +246,20 @@ label {
 		right: 10px;
 		padding: 10px;
 	}
+}
+
+.breadcrumb {
+	font-size: 1rem;
+	margin-bottom: 20px;
+	text-align: center;
+}
+
+.breadcrumb a {
+	text-decoration: none;
+	color: #bb86fc;
+	margin-right: 5px;
+}
+
+.breadcrumb span {
+	color: #ffffff;
 }

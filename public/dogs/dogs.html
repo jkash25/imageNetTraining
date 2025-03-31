@@ -7,11 +7,14 @@
 		<link rel="stylesheet" href="styles.css" />
 	</head>
 	<body>
-		<h1>Image Labeling: <em>Dogs</em></h1>
+		<div class="breadcrumb">
+			<a href="../index.html">Home</a> > <span>Image Labeling Dogs</span>
+		</div>
+		<h1>Image Labeling: <em>DOGS</em></h1>
 		<input type="button" id="clickMe" value="Get Image" />
 		<div id="imageContainer">
-			<!-- Image will be displayed here -->
 		</div>
+		
 		<script type="module" src="dogs.js"></script>
 
 		<div>
@@ -23,6 +26,11 @@
 			/>
 			<ul id="category-list" class="hidden"></ul>
 			<button id="search-button">Submit Category Guess</button>
+		</div>
+
+		<div id="current-guess-container" class="hidden">
+			<img id="current-guess-image" src="" alt="" class="guess-image" />
+			<p id="current-guess-text">Your current guess:</p>
 		</div>
 
 		<div id="stats" class="floating-widget">

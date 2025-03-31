@@ -140,25 +140,6 @@ document.getElementById("clickMe").addEventListener("click", async () => {
 			);
 			const data = await response.json();
 			if (data.gridImageUrl) {
-				// const imgBox2 = document.createElement("div");
-				// 	imgBox2.classList.add("image-box", "hidden");
-
-				// 	const imgElement2 = document.createElement("img");
-				// 	imgElement2.src = data2.gridImageUrl;
-				// 	imgElement2.alt = "Grid Image";
-				// 	imgElement2.classList.add("image-item"); // Add class for styling
-
-				// 	imgBox2.appendChild(imgElement2);
-				// 	imageContainer.appendChild(imgBox2);
-
-				// const imgBox3 = document.createElement("div");
-				// imgBox3.classList.add("image-box", "hidden")
-				// const imgElement3 = document.createElement("img");
-				// imgElement3.src = data.gridImageUrl;
-				// imgElement3.alt = "current guess";
-				// imgElement3.classList.add("image-item");
-				// imgBox3.appendChild(imgElement3);
-				// imageContainer.appendChild(imgBox3);
 				currentGuessImage.src = data.gridImageUrl;
 				currentGuessImage.alt = category;
 				currentGuessText.textContent = `Your current guess: ${category}`;
@@ -174,16 +155,16 @@ document.getElementById("clickMe").addEventListener("click", async () => {
 			categoryList.classList.add("hidden");
 		}
 	});
-	
-	searchButton.addEventListener("click", async() => {
+
+	searchButton.addEventListener("click", async () => {
 		const selectedCategory = searchInput.value.trim();
 		if (!currentCategory) {
 			alert("No image loaded. Please click the button to load an image.");
 			return;
 		}
 		if (selectedCategory === currentCategory) {
-			console.log("got here!")
-			const audioData = await fetch(`/get-Correct-Answer-Audio`)
+			console.log("got here!");
+			const audioData = await fetch(`/get-Correct-Answer-Audio`);
 			if (audioData.ok) {
 				const blob = await audioData.blob();
 				const audioURL = URL.createObjectURL(blob);
