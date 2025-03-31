@@ -55,3 +55,27 @@ body {
     width: 100%;
     visibility: hidden;
 }
+
+.no-results {
+    text-align: center;
+    padding: 2rem;
+    font-size: 1.2rem;
+    color: #666;
+    grid-column: 1 / -1; /* Span full grid width */
+}
+
+.breadcrumb {
+	font-size: 1rem;
+	margin-bottom: 20px;
+	text-align: center;
+}
+
+.breadcrumb a {
+	text-decoration: none;
+	color: #bb86fc;
+	margin-right: 5px;
+}
+
+.breadcrumb span {
+	color: #ffffff;
+}

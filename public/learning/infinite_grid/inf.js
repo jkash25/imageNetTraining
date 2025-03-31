@@ -4011,13 +4011,56 @@ const grid = document.getElementById("categoryGrid");
 const searchInput = document.getElementById("search");
 const popup = document.getElementById("popup");
 
+
+
+// Filters categories based on search input
+let isSearchActive = false; // Track if we're in "search mode"
+
+function filterCategories() {
+    const searchTerm = searchInput.value.toLowerCase().trim();
+    isSearchActive = searchTerm.length > 0;
+
+    // Case 1: Empty search → Reset to lazy loading
+    if (!isSearchActive) {
+        grid.innerHTML = ""; // Clear existing results
+        loadedItems = 0;     // Reset counter
+        loadMore();          // Load first batch
+        return;
+    }
+
+    // Case 2: Non-empty search → Filter ALL items
+    const matchingItems = categories.filter(category => 
+        category.name.toLowerCase().includes(searchTerm)
+    );
+
+    // Clear current grid
+    grid.innerHTML = "";
+
+    // Show "No results" or matching items
+    if (matchingItems.length === 0) {
+        grid.innerHTML = `<p class="no-results">No images found for "${searchTerm}"</p>`;
+    } else {
+        matchingItems.forEach(category => {
+            const card = document.createElement("div");
+            card.className = "card";
+            card.innerHTML = `
+                <img src="${category.image}" alt="${category.name}" loading="lazy">
+                <p>${category.name}</p>
+            `;
+            card.addEventListener("mouseenter", () => showPopup(category.image, category.name));
+            card.addEventListener("mouseleave", hidePopup);
+            grid.appendChild(card);
+        });
+    }
+}
+
 // ======================
 // Main Functions
 // ======================
 
 // Loads more items into the grid
 function loadMore() {
-    if (loadedItems >= categories.length) {
+    if ( isSearchActive || loadedItems >= categories.length) {
         // All items loaded - remove scroll listener if desired
         return;
     }
@@ -4060,18 +4103,6 @@ function preloadNextBatch() {
         img.src = categories[i].image;
     }
 }
-
-// Filters categories based on search input
-function filterCategories() {
-    const searchTerm = searchInput.value.toLowerCase();
-    const cards = grid.getElementsByClassName("card");
-
-    Array.from(cards).forEach((card) => {
-        const name = card.querySelector("p").textContent.toLowerCase();
-        card.style.display = name.includes(searchTerm) ? "" : "none";
-    });
-}
-
 // UI Functions
 
 function showPopup(image, name) {
