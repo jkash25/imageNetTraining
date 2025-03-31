@@ -23,7 +23,7 @@ const birdParams = {
 const audioParams = {
 	Bucket: BUCKET_NAME,
 	Key: "correct_answer_sound.mp3",
-}
+};
 
 async function getObject(params) {
 	console.log("get object has been called");
@@ -391,14 +391,14 @@ app.get("/get-image-grid-from-category", async (req, res) => {
 
 app.get("/get-Correct-Answer-Audio", async (req, res) => {
 	try {
-        const audioData = await s3.getObject(audioParams).promise();
-        res.setHeader('Content-Type', 'audio/mpeg');
+		const audioData = await s3.getObject(audioParams).promise();
+		res.setHeader("Content-Type", "audio/mpeg");
 		res.setHeader("Content-Disposition", "inline");
-        res.send(audioData.Body);
-    } catch (error) {
-        console.error("Error fetching audio:", error);
-        res.status(500).json({ message: "Failed to fetch audio" });
-    }
+		res.send(audioData.Body);
+	} catch (error) {
+		console.error("Error fetching audio:", error);
+		res.status(500).json({ message: "Failed to fetch audio" });
+	}
 });
 
 app.use(express.static("public"));
