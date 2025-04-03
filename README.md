@@ -37,5 +37,6 @@ node server.js
 ```
 5. Open your browswer and go to http://localhost:3000
 
+## Feel free to contribute, open issues, and suggest improvements!
 
-```
+### Contact: jaitkash@gmail.com or jkashyap3@gatech.edu
