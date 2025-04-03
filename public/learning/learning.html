@@ -1,32 +1,59 @@
 <!DOCTYPE html>
 <html lang="en">
+<head>
+    <html lang="en">
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>ImageNet Categories</title>
-		<link rel="stylesheet" href="styles.css" />
+		<title>Learning Page</title>
+		 <link rel="stylesheet" href="styles.css" />
 	</head>
 	<body>
-		<nav>
-			<ul>
-				<li><a href="../index.html">Home</a></li>
-			</ul>
-		</nav>
-
 		<div class="breadcrumb">
-			<a href="../index.html">Home</a> > <span>Main Categories</span>
+			<a href="../index.html">Home</a> > <span>Learning Page</span>
 		</div>
 
-		<h1>Select a Category</h1>
-
-		<div class="category-container">
-			<a href="animals/animals.html" class="category">Animals</a>
-			<a href="objects/objects.html" class="category">Objects</a>
-			<a href="scenes/scenes.html" class="category">Scenes & Natural Elements</a>
-			<a href="people/people.html" class="category">People & Activities</a>
-			<a href="abstract/abstract.html" class="category">Abstract & Miscellaneous</a>
-			<a href="infinite_grid/inf.html" class="category">Infinite Grid Page</a>
-
-		</div>
-	</body>
+		<h1>Select a Learning Category</h1>
+    <style>
+		
+    </style>
+</head>
+<body>
+    <div class="menu-container">
+        <div class="menu">
+            <a href="infinite_grid/inf.html" class="menu-button top-button">All Categories</a>
+            
+            <div class="menu-items">
+                <div class="menu-item">
+                    <div class="menu-label">Living</div>
+                    
+                    <div class="children">
+                        <div class="menu-item">
+                            <a href="infinite_grid/mammals/mammals.html" class="menu-button">Mammals</a>
+                            
+                            <div class="grandchildren">
+                                <a href="infinite_grid/dogs/dogs.html" class="menu-button">Dogs</a>
+                                <a href="infinite_grid/aquatic/aquatic.html" class="menu-button">Aquatic</a>
+                            </div>
+                        </div>
+                        
+                        <a href="infinite_grid/birds/birds.html" class="menu-button">Birds</a>
+                        
+                        <a href="infinite_grid/amrep/amrep.html" class="menu-button">Amphibian/Reptile</a>
+                    </div>
+                </div>
+                
+                <div class="menu-item">
+                    <div class="menu-label">Non Living</div>
+                    
+                    <div class="children">
+                        <a href="infinite_grid/food/food.html" class="menu-button">Food</a>
+                        <a href="infinite_grid/objects/objects.html" class="menu-button">Object</a>
+                        <a href="infinite_grid/misc/misc.html" class="menu-button">Miscellaneous</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
 </html>
