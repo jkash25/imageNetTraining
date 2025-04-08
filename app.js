@@ -24,6 +24,15 @@ const audioParams = {
 	Bucket: BUCKET_NAME,
 	Key: "correct_answer_sound.mp3",
 };
+let dogsList = null;
+let locSynsetList = null;
+let birdsList = null;
+async function preloadFiles() {
+	dogsList = await getDogObject();
+	locSynsetList = await getObject();
+	birdsList = await getBirdObject();
+}
+preloadFiles();
 
 async function getObject(params) {
 	console.log("get object has been called");
@@ -47,10 +56,10 @@ async function getBirdObject() {
 }
 
 async function getIdentifierFromCategory(categoryName) {
-	const data1 = await getObject();
-	const fileContent = data1;
+	//const data1 = await getObject();
+	//const fileContent = data1;
 
-	const lines = fileContent.split("\n").filter((line) => line.trim() !== "");
+	const lines = locSynsetList.split("\n").filter((line) => line.trim() !== "");
 	const categoryMap = {};
 
 	lines.forEach((line) => {
@@ -72,9 +81,9 @@ async function getIdentifierFromCategory(categoryName) {
 async function imageToCategory(img_path) {
 	console.log(img_path);
 	console.log("image to category has been calleds");
-	const data = await getObject();
+	//const data = await getObject();
 	console.log("Data gotten from getObject");
-	const lines = data.split(/\r?\n|\r|\n/g);
+	const lines = locSynsetList.split(/\r?\n|\r|\n/g);
 	const synset_map = lines.reduce((map, line) => {
 		map[line.slice(0, 9)] = line.slice(10);
 		return map;
@@ -93,59 +102,88 @@ async function imageToCategory(img_path) {
 	}
 }
 
+// async function getRandomFileFromAllFolders(bucketName, searchString, prefixes) {
+// 	const matchingFiles = [];
+
+// 	// Function to fetch all objects from a given prefix
+// 	async function fetchObjectsFromPrefix(prefix) {
+// 		const params = {
+// 			Bucket: bucketName,
+// 			Prefix: prefix, // Specify the current folder (prefix)
+// 		};
+
+// 		const prefixMatchingFiles = [];
+
+// 		let continuationToken = null;
+// 		do {
+// 			if (continuationToken) {
+// 				params.ContinuationToken = continuationToken;
+// 			}
+
+// 			const data = await s3.listObjectsV2(params).promise();
+
+// 			// Filter objects whose Key includes the search string
+// 			const filteredFiles = data.Contents.filter((item) =>
+// 				item.Key.includes(searchString)
+// 			);
+// 			prefixMatchingFiles.push(...filteredFiles);
+
+// 			continuationToken = data.IsTruncated ? data.NextContinuationToken : null;
+// 		} while (continuationToken);
+
+// 		return prefixMatchingFiles;
+// 	}
+
+// 	// Fetch all prefixes in parallel
+// 	const folderPromises = prefixes.map(fetchObjectsFromPrefix);
+
+// 	// Wait for all folders to be processed
+// 	const results = await Promise.all(folderPromises);
+
+// 	// Combine results from all folders
+// 	results.forEach((result) => matchingFiles.push(...result));
+
+// 	// Pick a random file if any matches were found
+// 	if (matchingFiles.length === 0) {
+// 		throw new Error(
+// 			`No files found containing "${searchString}" in any folder.`
+// 		);
+// 	}
+
+// 	const randomFile =
+// 		matchingFiles[Math.floor(Math.random() * matchingFiles.length)];
+// 	return randomFile.Key;
+// }
+const fileCache = new Map(); // key: awsImageKey, value: [file1, file2, file3...]
+
 async function getRandomFileFromAllFolders(bucketName, searchString, prefixes) {
+	// Check if we’ve already cached matching files
+	if (fileCache.has(searchString)) {
+		const matchingFiles = fileCache.get(searchString);
+		return matchingFiles[Math.floor(Math.random() * matchingFiles.length)];
+	}
+
+	// Else, do the S3 lookup and cache it
 	const matchingFiles = [];
 
-	// Function to fetch all objects from a given prefix
-	async function fetchObjectsFromPrefix(prefix) {
-		const params = {
-			Bucket: bucketName,
-			Prefix: prefix, // Specify the current folder (prefix)
-		};
-
-		const prefixMatchingFiles = [];
-
-		let continuationToken = null;
-		do {
-			if (continuationToken) {
-				params.ContinuationToken = continuationToken;
-			}
-
-			const data = await s3.listObjectsV2(params).promise();
-
-			// Filter objects whose Key includes the search string
-			const filteredFiles = data.Contents.filter((item) =>
-				item.Key.includes(searchString)
-			);
-			prefixMatchingFiles.push(...filteredFiles);
-
-			continuationToken = data.IsTruncated ? data.NextContinuationToken : null;
-		} while (continuationToken);
-
-		return prefixMatchingFiles;
-	}
-
-	// Fetch all prefixes in parallel
-	const folderPromises = prefixes.map(fetchObjectsFromPrefix);
-
-	// Wait for all folders to be processed
-	const results = await Promise.all(folderPromises);
-
-	// Combine results from all folders
-	results.forEach((result) => matchingFiles.push(...result));
-
-	// Pick a random file if any matches were found
-	if (matchingFiles.length === 0) {
-		throw new Error(
-			`No files found containing "${searchString}" in any folder.`
+	for (const prefix of prefixes) {
+		const params = { Bucket: bucketName, Prefix: prefix };
+		const data = await s3.listObjectsV2(params).promise();
+		const filtered = data.Contents.filter(item =>
+			item.Key.includes(searchString)
 		);
+		if (filtered.length > 0) {
+			matchingFiles.push(...filtered.map(item => item.Key));
+		}
 	}
 
-	const randomFile =
-		matchingFiles[Math.floor(Math.random() * matchingFiles.length)];
-	return randomFile.Key;
-}
+	if (matchingFiles.length === 0) {
+		throw new Error(`No files found for "${searchString}"`);
+	}
 
+	fileCache.set(searchString, matchingFiles); // ✅ Cache full list
+	return matchingFiles[Math.floor(Math.random() * matchingFiles.length)]; // ✅ Still random
+}
 app.get(`/get-random-image-url`, async (req, res) => {
 	try {
 		const params = {
@@ -220,10 +258,9 @@ app.get("/get-image-category", async (req, res) => {
 
 app.get("/get-categories", async (req, res) => {
 	try {
-		const data = await getObject();
-		const categories = data
+		//const data = await getObject();
+		const categories = locSynsetList
 			.split("\n")
-			//.map(line => line.split(/\s+|,/).slice(1).join(' ').trim())
 			.map((line) => line.split(/\s/).slice(1).join(" ").trim())
 			.filter((category) => category);
 
@@ -235,17 +272,18 @@ app.get("/get-categories", async (req, res) => {
 
 app.get("/get-random-dog-url", async (req, res) => {
 	try {
-		const data = await getDogObject();
-		let categories = data.split("\n");
+		//const data = await getDogObject();
+		let categories = dogsList.split("\n");
 		let randomDog = categories[Math.floor(Math.random() * categories.length)];
 		randomDog = randomDog.substring(0, randomDog.length - 1);
-		const data2 = await getObject();
-		const locSynsetArray = data2.split(/\r?\n|\r|\n/g);
+		//const data2 = await getObject();
+		const locSynsetArray = locSynsetList.split(/\r?\n|\r|\n/g);
 		let awsImageKey = "";
 		for (let i = 0; i < locSynsetArray.length; i++) {
 			if (locSynsetArray[i].toLowerCase().includes(randomDog.toLowerCase())) {
 				console.log("MATCH FOUND IN LOC SYNSET ARRAY: " + locSynsetArray[i]);
 				awsImageKey = locSynsetArray[i].substring(0, 9);
+				break;
 			}
 		}
 		console.log("awsImageKey: " + awsImageKey);
@@ -281,17 +319,19 @@ app.get("/get-random-dog-url", async (req, res) => {
 
 app.get("/get-random-bird-url", async (req, res) => {
 	try {
-		const data = await getBirdObject();
-		let categories = data.split("\n");
+		//const data = await getBirdObject();
+		let categories = birdsList.split("\n");
 		let randomBird = categories[Math.floor(Math.random() * categories.length)];
 		randomBird = randomBird.substring(0, randomBird.length - 1);
-		const data2 = await getObject();
-		const locSynsetArray = data2.split(/\r?\n|\r|\n/g);
+
+		//const data2 = await getObject();
+		const locSynsetArray = locSynsetList.split(/\r?\n|\r|\n/g);
 		let awsImageKey = "";
 		for (let i = 0; i < locSynsetArray.length; i++) {
 			if (locSynsetArray[i].toLowerCase().includes(randomBird.toLowerCase())) {
 				console.log("MATCH FOUND IN LOC SYNSET ARRAY: " + locSynsetArray[i]);
 				awsImageKey = locSynsetArray[i].substring(0, 9);
+				break;
 			}
 		}
 		console.log("awsImageKey: " + awsImageKey);
