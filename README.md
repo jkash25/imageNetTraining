@@ -38,7 +38,7 @@ npm install
 ```
 4. Run the server
 ```bash
-node server.js
+node app.js
 ```
 5. Open your browswer and go to http://localhost:3000
 
