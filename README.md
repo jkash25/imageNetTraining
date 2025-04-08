@@ -1,8 +1,13 @@
-# ImageNet Training
+# 🌐 ImageNet Training
 
-## ImageNet Human Training & Testing Tool 
-### Overview 
+## 🧠 ImageNet Human Training & Testing Tool
+
+### 📋 Overview 
 This project is a web-based tool designed to train and test human subjects on the ImageNet dataset, with the goal of improving human object recognition benchmarks. The website provides an interactive way for users to guess the labels of randomly selected images and track their progress.
+
+### 🚀 Live Demo
+Check out the deployed site here:  
+🔗 **[ImageNet Training Website](https://imagenettraining.onrender.com)** 
 
 ### Features 
 1. Main Image Labeling Page Displays a random image from the ImageNet dataset. Users input their guess into a search box. Tracks user statistics: correct, incorrect, and total guesses. If incorrect, users can reveal: The correct answer. A "grid image" (5x5 grid of 25 example images) to help with recognition. Displays a "current guess" feature showing a grid image of the guessed category. 
