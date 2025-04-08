@@ -402,8 +402,6 @@ app.get("/get-Correct-Answer-Audio", async (req, res) => {
 });
 
 app.use(express.static("public"));
-app.use(express.json());
-
 app.listen(port, () => {
 	console.log(`Server is running at http://localhost:${port}`);
 });
