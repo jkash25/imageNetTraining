@@ -220,10 +220,10 @@ function loadMore() {
         `;
 
 		// Event listeners for popup
-		card.addEventListener("mouseenter", () =>
+		card.addEventListener("click", () =>
 			showPopup(category.image, category.name)
 		);
-		card.addEventListener("mouseleave", hidePopup);
+		document.getElementById("closePopup").addEventListener("click", hidePopup);
 
 		fragment.appendChild(card);
 	});
