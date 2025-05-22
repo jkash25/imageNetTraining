@@ -698,9 +698,13 @@ function preloadNextBatch() {
 // UI Functions
 
 function showPopup(image, name) {
+	const cardRect = event.currentTarget.getBoundingClientRect();
+	const scrollTop = window.scrollY;
 	document.getElementById("popupImage").src = image;
 	document.getElementById("popupText").textContent = name;
 	popup.classList.remove("hidden");
+	const popupTop = cardRect.top + scrollTop;
+	popup.style.top = `${popupTop}px`;
 }
 
 function hidePopup() {

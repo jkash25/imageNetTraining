@@ -18,23 +18,25 @@
 			placeholder="Search categories..."
 			onkeyup="filterCategories()"
 		/>
-		<div class="grid" id="categoryGrid"></div>
-		<div id="popup" class="popup hidden">
-			<button
-				id="closePopup"
-				style="
-					align-self: flex-end;
-					background: none;
-					border: none;
-					color: red;
-					font-size: 3rem;
-					cursor: pointer;
-				"
-			>
-				×
-			</button>
-			<img id="popupImage" src="" alt="" />
-			<p id="popupText"></p>
+		<div class="content">
+			<div class="grid" id="categoryGrid"></div>
+			<div id="popup" class="popup hidden">
+				<button
+					id="closePopup"
+					style="
+						align-self: flex-end;
+						background: none;
+						border: none;
+						color: red;
+						font-size: 3rem;
+						cursor: pointer;
+					"
+				>
+					×
+				</button>
+				<img id="popupImage" src="" alt="" />
+				<p id="popupText"></p>
+			</div>
 		</div>
 		<script src="birds.js"></script>
 	</body>

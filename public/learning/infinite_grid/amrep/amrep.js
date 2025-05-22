@@ -295,8 +295,8 @@ function loadMore() {
         `;
 
 		// Event listeners for popup
-		card.addEventListener("click", () =>
-			showPopup(category.image, category.name)
+		card.addEventListener("click", (e) =>
+			showPopup(category.image, category.name, e)
 		);
 		document.getElementById("closePopup").addEventListener("click", hidePopup);
 		fragment.appendChild(card);
@@ -322,9 +322,13 @@ function preloadNextBatch() {
 // UI Functions
 
 function showPopup(image, name) {
+	const cardRect = event.currentTarget.getBoundingClientRect();
+	const scrollTop = window.scrollY;
 	document.getElementById("popupImage").src = image;
 	document.getElementById("popupText").textContent = name;
 	popup.classList.remove("hidden");
+	const popupTop = cardRect.top + scrollTop;
+	popup.style.top = `${popupTop}px`;
 }
 
 function hidePopup() {
