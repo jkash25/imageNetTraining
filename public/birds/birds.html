@@ -5,30 +5,27 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>Image Labeling</title>
 		<link rel="stylesheet" href="styles.css" />
+		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 	</head>
 	<body>
 		<div class="breadcrumb">
 			<a href="../index.html">Home</a> > <span>Image Labeling Birds</span>
 		</div>
-		<h1>Image Labeling: <em>Birds</em></h1>
-		<input type="button" id="clickMe" value="Get Image" />
-		<div id="imageContainer">
-		</div>
-		
-		<script type="module" src="birds.js"></script>
 
-		<div>
+		<h1>Image Labeling: <em>Birds</em></h1>
+
+		<input type="button" id="clickMe" value="Get Image" class="fade-in" />
+
+		<div id="imageContainer" class="fade-in"></div>
+
+		<div class="search-section fade-in">
 			<label for="category-search">Search for a Category:</label>
-			<input
-				type="search"
-				id="category-search"
-				placeholder="Type to search..."
-			/>
+			<input type="search" id="category-search" placeholder="Type to search..." />
 			<ul id="category-list" class="hidden"></ul>
 			<button id="search-button">Submit Category Guess</button>
 		</div>
 
-		<div id="current-guess-container" class="hidden">
+		<div id="current-guess-container" class="hidden fade-in">
 			<img id="current-guess-image" src="" alt="" class="guess-image" />
 			<p id="current-guess-text">Your current guess:</p>
 		</div>
@@ -38,6 +35,7 @@
 			<h2>Wrong: <span id="wrongCount">0</span></h2>
 			<h2>Total Guesses: <span id="totalGuesses">0</span></h2>
 		</div>
-		<div style="height: 150px"></div>
+
+		<script type="module" src="birds.js"></script>
 	</body>
 </html>
