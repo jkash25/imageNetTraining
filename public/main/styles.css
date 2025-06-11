@@ -215,59 +215,59 @@ label {
 }
 
 /* ==== Floating Stats Widget ==== */
+
 .floating-widget {
 	position: fixed;
-	bottom: 20px;
-	right: 20px;
-	background-color: #263238;
-	border-radius: 12px;
-	padding: 1rem;
-	box-shadow: 0 6px 15px rgba(0, 0, 0, 0.5);
-	width: 240px;
-	text-align: left;
-	border: 1px solid #37474f;
+	bottom: 24px;
+	right: 24px;
+	background: rgba(30, 30, 30, 0.75);
+	backdrop-filter: blur(8px);
+	border: 1px solid rgba(255, 255, 255, 0.05);
+	border-radius: 16px;
+	padding: 1rem 1.25rem;
+	box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+	width: 260px;
+	color: #e0e0e0;
+	display: flex;
+	flex-direction: column;
+	gap: 0.75rem;
 	transition: transform 0.3s ease;
+	z-index: 100;
 }
 
 .floating-widget:hover {
-	transform: scale(1.03);
+	transform: translateY(-2px);
+	box-shadow: 0 12px 24px rgba(0, 0, 0, 0.6);
 }
 
 .floating-widget h2 {
+	margin: 0;
 	font-size: 1rem;
-	margin: 0.25rem 0;
+	font-weight: 600;
+	display: flex;
+	justify-content: space-between;
 }
 
-.floating-widget span {
-	font-weight: 600;
+.floating-widget h2 span {
+	font-weight: 700;
 }
 
 .floating-widget h2:nth-child(1) span {
-	color: #66bb6a;
+	color: #28a745; /* Correct - green */
 }
 
 .floating-widget h2:nth-child(2) span {
-	color: #ef5350;
+	color: #dc3545; /* Wrong - red */
 }
 
 .floating-widget h2:nth-child(3) span {
-	color: #ffca28;
+	color: #ffc107; /* Total - yellow */
 }
 
-/* ==== Responsive ==== */
 @media (max-width: 600px) {
-	h1 {
-		font-size: 2rem;
-	}
-
-	#imageContainer {
-		flex-direction: column;
-		padding: 1rem;
-	}
-
 	.floating-widget {
-		width: 90%;
-		bottom: 10px;
-		right: 5%;
+		bottom: 16px;
+		right: 16px;
+		width: calc(100% - 32px);
 	}
 }
