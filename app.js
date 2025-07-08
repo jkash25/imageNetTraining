@@ -181,8 +181,8 @@ async function getRandomFileFromAllFolders(bucketName, searchString, prefixes) {
 		throw new Error(`No files found for "${searchString}"`);
 	}
 
-	fileCache.set(searchString, matchingFiles); // ✅ Cache full list
-	return matchingFiles[Math.floor(Math.random() * matchingFiles.length)]; // ✅ Still random
+	fileCache.set(searchString, matchingFiles);
+	return matchingFiles[Math.floor(Math.random() * matchingFiles.length)];
 }
 app.get(`/get-random-image-url`, async (req, res) => {
 	try {
